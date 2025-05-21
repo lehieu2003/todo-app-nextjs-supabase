@@ -1,17 +1,60 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Next.js + Supabase Todo App
+
+A full-stack todo application built with Next.js and Supabase, featuring user authentication, real-time updates, and a modern UI built with Tailwind CSS.
+
+![Next.js](https://img.shields.io/badge/Next.js-13+-000000?style=flat&logo=next.js&logoColor=white)
+![Supabase](https://img.shields.io/badge/Supabase-3ECF8E?style=flat&logo=supabase&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=flat&logo=typescript&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-06B6D4?style=flat&logo=tailwind-css&logoColor=white)
+
+## Features
+
+- ✅ User authentication with Supabase Auth
+- ✅ Create, read, update, and delete todos
+- ✅ Task prioritization with priority levels
+- ✅ Due date tracking
+- ✅ Task descriptions
+- ✅ Responsive design with Tailwind CSS
+- ✅ Dark mode support
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+
+- Node.js 16.8.0 or later
+- npm or yarn
+- Supabase account (free tier works)
+
+### Setup Supabase
+
+Before running the application, you need to set up your Supabase project. See the [Supabase Setup Instructions](SUPABASE_SETUP.md) for details.
+
+### Installation
+
+1. Clone the repository
+2. Install dependencies:
+
+```bash
+npm install
+# or
+yarn install
+```
+
+### Environment Variables
+
+Create a `.env.local` file in the root directory with your Supabase credentials:
+
+```
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+```
+
+### Run the Development Server
 
 ```bash
 npm run dev
 # or
 yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
