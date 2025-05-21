@@ -38,15 +38,15 @@ Follow these steps to set up your Supabase project for the Todo app:
    - Then click "New Policy" to create the following policies:
 
    **For Select (read) operations**:
-   
+
    - Select "Create a policy from scratch"
    - Policy name: "Enable read access for all users"
    - For operation: SELECT
-   - Policy definition (using the editor): `true` 
+   - Policy definition (using the editor): `true`
    - Click "Review" then "Save Policy"
 
    **For Insert operations**:
-   
+
    - Click "New Policy" again
    - Select "Create a policy from scratch"
    - Policy name: "Enable insert for all users"
@@ -55,23 +55,23 @@ Follow these steps to set up your Supabase project for the Todo app:
    - Click "Review" then "Save Policy"
 
    **For Update operations**:
-   
+
    - Click "New Policy" again
    - Select "Create a policy from scratch"
    - Policy name: "Enable update for all users"
    - For operation: UPDATE
-   - Policy definition (using the editor): `true` 
+   - Policy definition (using the editor): `true`
    - Click "Review" then "Save Policy"
 
    **For Delete operations**:
-   
+
    - Click "New Policy" again
    - Select "Create a policy from scratch"
    - Policy name: "Enable delete for all users"
    - For operation: DELETE
    - Policy definition (using the editor): `true`
    - Click "Review" then "Save Policy"
-   
+
    **Note:** For a production app, you would use `auth.uid() = user_id` instead of `true` for these policies.
 
 5. **Get API Keys**:
@@ -82,6 +82,6 @@ Follow these steps to set up your Supabase project for the Todo app:
 
 6. **Run the application**:
    - Start your Next.js application with `npm run dev`.
-   - Navigate to http://localhost:3000 to see the Todo app.
+   - Navigate to [http://localhost:3000](http://localhost:3000) to see the Todo app.
 
 Note: For a production application, you would want to implement proper authentication and more secure RLS policies. This setup is simplified for demonstration purposes.

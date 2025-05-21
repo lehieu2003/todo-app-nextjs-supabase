@@ -5,6 +5,7 @@ import { createClientSupabaseClient } from '@/lib/supabase';
 import Link from 'next/link';
 
 export default function AuthButton() {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const supabase = createClientSupabaseClient();
@@ -30,7 +31,7 @@ export default function AuthButton() {
     return () => {
       subscription.unsubscribe();
     };
-  }, []);
+  }, [supabase]);
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();

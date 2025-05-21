@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react';
 import { createClientSupabaseClient } from '@/lib/supabase';
 import { Todo } from '@/types/supabase';
-import { Session } from '@supabase/supabase-js';
 
 // Priority badge component
 const PriorityBadge = ({

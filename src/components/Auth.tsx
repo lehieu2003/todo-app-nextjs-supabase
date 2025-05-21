@@ -38,8 +38,12 @@ export default function Auth() {
         if (error) throw error;
         setMessage('Check your email for the confirmation link!');
       }
-    } catch (error: any) {
-      setMessage(error.message || 'An error occurred during authentication');
+    } catch (error) {
+      if (error && typeof error === 'object' && 'message' in error) {
+        setMessage((error as { message: string }).message);
+      } else {
+        setMessage('An error occurred during authentication');
+      }
     } finally {
       setLoading(false);
     }
