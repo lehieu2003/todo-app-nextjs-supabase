@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import AuthButton from './AuthButton';
+import ThemeToggle from './ThemeToggle';
 import { useState } from 'react';
 
 export default function NavBar() {
@@ -51,7 +52,8 @@ export default function NavBar() {
                 About
               </Link>
             </div>
-            <div className='ml-4'>
+            <div className='ml-4 flex items-center space-x-2'>
+              <ThemeToggle />
               <AuthButton />
             </div>
           </div>
@@ -124,7 +126,10 @@ export default function NavBar() {
             </Link>
           </div>
           <div className='px-4 py-3 border-t border-gray-200'>
-            <AuthButton />
+            <div className='flex items-center space-x-4'>
+              <ThemeToggle />
+              <AuthButton />
+            </div>
           </div>
         </div>
       )}

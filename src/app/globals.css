@@ -18,16 +18,15 @@
   --font-heading: var(--font-poppins);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0f172a;
-    --foreground: #f1f5f9;
-    --accent: #3b82f6;
-    --accent-foreground: #ffffff;
-    --border: #1e293b;
-    --card: #1e293b;
-    --card-foreground: #f1f5f9;
-  }
+/* Dark mode styles using class instead of media query */
+.dark {
+  --background: #0f172a;
+  --foreground: #f1f5f9;
+  --accent: #3b82f6;
+  --accent-foreground: #ffffff;
+  --border: #1e293b;
+  --card: #1e293b;
+  --card-foreground: #f1f5f9;
 }
 
 body {
