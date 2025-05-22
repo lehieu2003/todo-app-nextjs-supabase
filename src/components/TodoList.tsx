@@ -14,17 +14,64 @@ const PriorityBadge = ({
   if (!priority) return null;
 
   const colors = {
-    low: 'bg-green-100 text-green-800',
-    medium: 'bg-yellow-100 text-yellow-800',
-    high: 'bg-red-100 text-red-800',
+    low: 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400',
+    medium:
+      'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400',
+    high: 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400',
+  };
+
+  const icons = {
+    low: (
+      <svg
+        xmlns='http://www.w3.org/2000/svg'
+        className='h-3 w-3 mr-1'
+        viewBox='0 0 20 20'
+        fill='currentColor'
+      >
+        <path
+          fillRule='evenodd'
+          d='M5.293 7.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L11 5.414V17a1 1 0 11-2 0V5.414L6.707 7.707a1 1 0 01-1.414 0z'
+          clipRule='evenodd'
+        />
+      </svg>
+    ),
+    medium: (
+      <svg
+        xmlns='http://www.w3.org/2000/svg'
+        className='h-3 w-3 mr-1'
+        viewBox='0 0 20 20'
+        fill='currentColor'
+      >
+        <path
+          fillRule='evenodd'
+          d='M4 10a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1z'
+          clipRule='evenodd'
+        />
+      </svg>
+    ),
+    high: (
+      <svg
+        xmlns='http://www.w3.org/2000/svg'
+        className='h-3 w-3 mr-1'
+        viewBox='0 0 20 20'
+        fill='currentColor'
+      >
+        <path
+          fillRule='evenodd'
+          d='M14.707 12.293a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L9 14.586V3a1 1 0 012 0v11.586l2.293-2.293a1 1 0 011.414 0z'
+          clipRule='evenodd'
+        />
+      </svg>
+    ),
   };
 
   return (
     <span
       className={`${
         colors[priority as keyof typeof colors]
-      } text-xs px-2 py-1 rounded-full font-medium ml-2`}
+      } text-xs px-2 py-1 rounded-full font-medium ml-2 inline-flex items-center`}
     >
+      {icons[priority as keyof typeof icons]}
       {priority}
     </span>
   );
@@ -219,8 +266,12 @@ export default function TodoList() {
   }
 
   return (
-    <div className='max-w-2xl mx-auto p-4'>
-      <h1 className='text-2xl font-bold mb-4'>Todo App</h1>
+    <div className='max-w-3xl mx-auto p-6'>
+      <div className='flex justify-between items-center mb-8'>
+        <h1 className='text-2xl font-bold text-slate-800 dark:text-white'>
+          My Tasks
+        </h1>
+      </div>
 
       {!showForm ? (
         <button
@@ -232,11 +283,11 @@ export default function TodoList() {
             }
             setShowForm(true);
           }}
-          className='flex items-center justify-center w-full py-3 mb-6 bg-blue-50 hover:bg-blue-100 text-blue-600 rounded-md transition-colors'
+          className='flex items-center justify-center w-full py-4 mb-8 bg-blue-50 hover:bg-blue-100 dark:bg-blue-900/20 dark:hover:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-lg transition-colors shadow-sm hover:shadow group'
         >
           <svg
             xmlns='http://www.w3.org/2000/svg'
-            className='h-5 w-5 mr-2'
+            className='h-5 w-5 mr-2 group-hover:scale-110 transition-transform'
             viewBox='0 0 20 20'
             fill='currentColor'
           >
@@ -251,12 +302,36 @@ export default function TodoList() {
       ) : (
         <form
           onSubmit={addTodo}
-          className='mb-6 bg-white rounded-lg shadow p-4 border border-gray-200'
+          className='mb-8 bg-white dark:bg-slate-800 rounded-xl shadow-lg p-6 border border-slate-100 dark:border-slate-700 transition-all'
         >
+          <div className='flex items-center justify-between mb-4'>
+            <h2 className='text-xl font-bold text-slate-800 dark:text-white'>
+              Create New Task
+            </h2>
+            <button
+              type='button'
+              onClick={() => setShowForm(false)}
+              className='text-slate-400 hover:text-slate-600 dark:hover:text-slate-200'
+            >
+              <svg
+                xmlns='http://www.w3.org/2000/svg'
+                className='h-5 w-5'
+                viewBox='0 0 20 20'
+                fill='currentColor'
+              >
+                <path
+                  fillRule='evenodd'
+                  d='M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z'
+                  clipRule='evenodd'
+                />
+              </svg>
+            </button>
+          </div>
+
           <div className='mb-4'>
             <label
               htmlFor='title'
-              className='block text-sm font-medium text-gray-700 mb-1'
+              className='block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2'
             >
               Task Title *
             </label>
@@ -266,7 +341,7 @@ export default function TodoList() {
               placeholder='What needs to be done?'
               value={newTodo}
               onChange={(e) => setNewTodo(e.target.value)}
-              className='w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500'
+              className='w-full border border-slate-200 dark:border-slate-600 px-4 py-3 rounded-lg bg-white dark:bg-slate-700 text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors'
               required
             />
           </div>
@@ -274,7 +349,7 @@ export default function TodoList() {
           <div className='mb-4'>
             <label
               htmlFor='description'
-              className='block text-sm font-medium text-gray-700 mb-1'
+              className='block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2'
             >
               Description (optional)
             </label>
@@ -283,65 +358,123 @@ export default function TodoList() {
               placeholder='Add details about your task'
               value={newDescription}
               onChange={(e) => setNewDescription(e.target.value)}
-              className='w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500'
+              className='w-full border border-slate-200 dark:border-slate-600 px-4 py-3 rounded-lg bg-white dark:bg-slate-700 text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors'
               rows={2}
             />
           </div>
 
-          <div className='grid grid-cols-1 md:grid-cols-2 gap-4 mb-4'>
+          <div className='grid grid-cols-1 md:grid-cols-2 gap-4 mb-6'>
             <div>
               <label
                 htmlFor='dueDate'
-                className='block text-sm font-medium text-gray-700 mb-1'
+                className='block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2'
               >
                 Due Date (optional)
               </label>
-              <input
-                id='dueDate'
-                type='date'
-                value={newDueDate}
-                onChange={(e) => setNewDueDate(e.target.value)}
-                className='w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500'
-              />
+              <div className='relative'>
+                <div className='absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none'>
+                  <svg
+                    xmlns='http://www.w3.org/2000/svg'
+                    className='h-5 w-5 text-slate-400'
+                    viewBox='0 0 20 20'
+                    fill='currentColor'
+                  >
+                    <path
+                      fillRule='evenodd'
+                      d='M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z'
+                      clipRule='evenodd'
+                    />
+                  </svg>
+                </div>
+                <input
+                  id='dueDate'
+                  type='date'
+                  value={newDueDate}
+                  onChange={(e) => setNewDueDate(e.target.value)}
+                  className='w-full border border-slate-200 dark:border-slate-600 pl-10 px-4 py-3 rounded-lg bg-white dark:bg-slate-700 text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors'
+                />
+              </div>
             </div>
 
             <div>
               <label
                 htmlFor='priority'
-                className='block text-sm font-medium text-gray-700 mb-1'
+                className='block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2'
               >
                 Priority (optional)
               </label>
-              <select
-                id='priority'
-                value={newPriority}
-                onChange={(e) =>
-                  setNewPriority(
-                    e.target.value as '' | 'low' | 'medium' | 'high'
-                  )
-                }
-                className='w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500'
-              >
-                <option value=''>No priority</option>
-                <option value='low'>Low</option>
-                <option value='medium'>Medium</option>
-                <option value='high'>High</option>
-              </select>
+              <div className='relative'>
+                <div className='absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none'>
+                  <svg
+                    xmlns='http://www.w3.org/2000/svg'
+                    className='h-5 w-5 text-slate-400'
+                    viewBox='0 0 20 20'
+                    fill='currentColor'
+                  >
+                    <path
+                      fillRule='evenodd'
+                      d='M3 6a3 3 0 013-3h10a1 1 0 011 1v10a2 2 0 01-2 2H4a1 1 0 01-1-1V6z'
+                      clipRule='evenodd'
+                    />
+                  </svg>
+                </div>
+                <select
+                  id='priority'
+                  value={newPriority}
+                  onChange={(e) =>
+                    setNewPriority(
+                      e.target.value as '' | 'low' | 'medium' | 'high'
+                    )
+                  }
+                  className='w-full border border-slate-200 dark:border-slate-600 pl-10 px-4 py-3 rounded-lg bg-white dark:bg-slate-700 text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors appearance-none'
+                >
+                  <option value=''>No priority</option>
+                  <option value='low'>Low</option>
+                  <option value='medium'>Medium</option>
+                  <option value='high'>High</option>
+                </select>
+                <div className='absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none'>
+                  <svg
+                    xmlns='http://www.w3.org/2000/svg'
+                    className='h-4 w-4 text-slate-400'
+                    viewBox='0 0 20 20'
+                    fill='currentColor'
+                  >
+                    <path
+                      fillRule='evenodd'
+                      d='M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z'
+                      clipRule='evenodd'
+                    />
+                  </svg>
+                </div>
+              </div>
             </div>
           </div>
 
-          <div className='flex justify-end space-x-2'>
+          <div className='flex justify-end space-x-3'>
             <button
               type='button'
               onClick={() => setShowForm(false)}
-              className='px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50'
+              className='px-5 py-3 border border-slate-200 dark:border-slate-600 text-slate-700 dark:text-slate-300 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors'
             >
               Cancel
             </button>
             <button
               type='submit'
-              className='px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none'
+              className='px-5 py-3 bg-blue-500 hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700 text-white rounded-lg shadow-sm hover:shadow transition-all flex items-center'
             >
+              <svg
+                xmlns='http://www.w3.org/2000/svg'
+                className='h-5 w-5 mr-2'
+                viewBox='0 0 20 20'
+                fill='currentColor'
+              >
+                <path
+                  fillRule='evenodd'
+                  d='M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z'
+                  clipRule='evenodd'
+                />
+              </svg>
               Add Task
             </button>
           </div>
@@ -349,51 +482,61 @@ export default function TodoList() {
       )}
 
       {loading ? (
-        <div className='h-60 flex items-center justify-center'>
-          <div className='animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-blue-500'></div>
+        <div className='h-60 flex flex-col items-center justify-center'>
+          <div className='animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500'></div>
+          <p className='mt-4 text-slate-500 dark:text-slate-400'>
+            Loading tasks...
+          </p>
         </div>
       ) : (
         <div>
           {todos.length === 0 ? (
-            <div className='text-center py-10'>
-              <svg
-                xmlns='http://www.w3.org/2000/svg'
-                className='h-16 w-16 mx-auto text-gray-300'
-                fill='none'
-                viewBox='0 0 24 24'
-                stroke='currentColor'
-              >
-                <path
-                  strokeLinecap='round'
-                  strokeLinejoin='round'
-                  strokeWidth={2}
-                  d='M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z'
-                />
-              </svg>
-              <p className='text-gray-500 mt-4'>
+            <div className='text-center py-16 bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700'>
+              <div className='mb-4 inline-flex items-center justify-center w-16 h-16 rounded-full bg-blue-50 dark:bg-blue-900/20 text-blue-500 dark:text-blue-400'>
+                <svg
+                  xmlns='http://www.w3.org/2000/svg'
+                  className='h-8 w-8'
+                  fill='none'
+                  viewBox='0 0 24 24'
+                  stroke='currentColor'
+                >
+                  <path
+                    strokeLinecap='round'
+                    strokeLinejoin='round'
+                    strokeWidth={2}
+                    d='M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z'
+                  />
+                </svg>
+              </div>
+              <h3 className='text-xl font-medium text-slate-800 dark:text-white mb-2'>
+                All Clear!
+              </h3>
+              <p className='text-slate-500 dark:text-slate-400'>
                 No tasks yet. Add a new one to get started!
               </p>
             </div>
           ) : (
-            <ul className='space-y-3'>
+            <ul className='space-y-4'>
               {todos.map((todo) => (
                 <li
                   key={todo.id}
-                  className={`p-4 ${
-                    todo.is_complete ? 'bg-gray-50' : 'bg-white'
-                  } rounded-lg shadow border border-gray-200 hover:border-gray-300 transition-colors`}
+                  className={`p-5 ${
+                    todo.is_complete
+                      ? 'bg-slate-50 dark:bg-slate-800/50 border-slate-200 dark:border-slate-700'
+                      : 'bg-white dark:bg-slate-800 border-slate-100 dark:border-slate-700'
+                  } rounded-xl shadow-sm hover:shadow border task-card`}
                 >
                   <div className='flex items-start justify-between'>
-                    <div className='flex items-start space-x-2'>
+                    <div className='flex items-start space-x-3'>
                       <button
                         onClick={() =>
                           toggleTodoStatus(todo.id, todo.is_complete)
                         }
-                        className={`mt-1 flex-shrink-0 h-5 w-5 rounded-full border ${
+                        className={`mt-1.5 flex-shrink-0 h-5 w-5 rounded-full border-2 ${
                           todo.is_complete
-                            ? 'bg-blue-500 border-blue-500'
-                            : 'border-gray-300'
-                        } flex items-center justify-center focus:outline-none`}
+                            ? 'bg-blue-500 border-blue-500 dark:bg-blue-600 dark:border-blue-600'
+                            : 'border-slate-300 dark:border-slate-600 hover:border-blue-500 dark:hover:border-blue-400'
+                        } flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors`}
                       >
                         {todo.is_complete && (
                           <svg
