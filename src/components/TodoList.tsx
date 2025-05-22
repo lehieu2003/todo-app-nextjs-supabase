@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { createClientSupabaseClient } from '@/lib/supabase';
 import { Todo } from '@/types/supabase';
+import { useRouter } from 'next/navigation';
 
 // Priority badge component
 const PriorityBadge = ({
@@ -65,13 +66,28 @@ export default function TodoList() {
   >('');
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [user, setUser] = useState<any>(null); // We'll use any for now as the Supabase user type
+  const router = useRouter();
   const supabase = createClientSupabaseClient();
 
-  // Load todos on component mount
+  // Load todos on component mount and get current user
   useEffect(() => {
     fetchTodos();
+    getCurrentUser();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  async function getCurrentUser() {
+    try {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      setUser(user);
+    } catch (error) {
+      console.error('Error getting user:', error);
+    }
+  }
 
   async function fetchTodos() {
     try {
@@ -92,7 +108,9 @@ export default function TodoList() {
       }
     } catch (error) {
       console.error('Error fetching todos:', error);
-      alert('Error loading todos. Please check your Supabase setup and RLS policies.');
+      alert(
+        'Error loading todos. Please check your Supabase setup and RLS policies.'
+      );
     } finally {
       setLoading(false);
     }
@@ -104,15 +122,23 @@ export default function TodoList() {
 
     try {
       console.log('Adding new todo to Supabase...');
+
+      // Ensure user is logged in before adding a todo
+      if (!user?.id) {
+        alert('You need to login first to add a todo');
+        router.push('/login');
+        return;
+      }
+
       console.log('Todo data:', {
         title: newTodo.trim(),
         description: newDescription.trim() || null,
         is_complete: false,
-        user_id: 'anonymous',
+        user_id: user.id,
         due_date: newDueDate || null,
         priority: newPriority || null,
       });
-      
+
       const { data, error } = await supabase
         .from('todos')
         .insert([
@@ -120,7 +146,7 @@ export default function TodoList() {
             title: newTodo.trim(),
             description: newDescription.trim() || null,
             is_complete: false,
-            user_id: 'anonymous', // In a real app, you would use authenticated user ID
+            user_id: user.id, // Use the authenticated user ID
             due_date: newDueDate || null,
             priority: newPriority || null,
           },
@@ -131,7 +157,7 @@ export default function TodoList() {
         console.error('Supabase insert error:', error);
         throw error;
       }
-      
+
       if (data) {
         console.log('Todo added successfully:', data[0]);
         setTodos([data[0], ...todos]);
@@ -143,11 +169,20 @@ export default function TodoList() {
       }
     } catch (error) {
       console.error('Error adding todo:', error);
-      alert('Error adding todo. Please check your Supabase setup and make sure RLS policies are properly configured.');
+      alert(
+        'Error adding todo. Please check your Supabase setup and make sure RLS policies are properly configured.'
+      );
     }
   }
 
   async function toggleTodoStatus(id: number, is_complete: boolean) {
+    // Check if user is logged in
+    if (!user) {
+      alert('You must be logged in to update a todo');
+      router.push('/login');
+      return;
+    }
+
     try {
       const { error } = await supabase
         .from('todos')
@@ -166,6 +201,13 @@ export default function TodoList() {
   }
 
   async function deleteTodo(id: number) {
+    // Check if user is logged in
+    if (!user) {
+      alert('You must be logged in to delete a todo');
+      router.push('/login');
+      return;
+    }
+
     try {
       const { error } = await supabase.from('todos').delete().eq('id', id);
 
@@ -182,7 +224,14 @@ export default function TodoList() {
 
       {!showForm ? (
         <button
-          onClick={() => setShowForm(true)}
+          onClick={() => {
+            if (!user) {
+              alert('You need to login first to add a todo');
+              router.push('/login');
+              return;
+            }
+            setShowForm(true);
+          }}
           className='flex items-center justify-center w-full py-3 mb-6 bg-blue-50 hover:bg-blue-100 text-blue-600 rounded-md transition-colors'
         >
           <svg
@@ -335,32 +384,45 @@ export default function TodoList() {
                   } rounded-lg shadow border border-gray-200 hover:border-gray-300 transition-colors`}
                 >
                   <div className='flex items-start justify-between'>
-                    <div className='flex items-start space-x-3'>
-                      <input
-                        type='checkbox'
-                        checked={todo.is_complete}
-                        onChange={() =>
+                    <div className='flex items-start space-x-2'>
+                      <button
+                        onClick={() =>
                           toggleTodoStatus(todo.id, todo.is_complete)
                         }
-                        className='mt-1 h-4 w-4 text-blue-500 rounded focus:ring-blue-500'
-                      />
-                      <div>
-                        <div className='flex items-center'>
-                          <span
-                            className={`font-medium ${
-                              todo.is_complete
-                                ? 'line-through text-gray-500'
-                                : 'text-gray-900'
-                            }`}
+                        className={`mt-1 flex-shrink-0 h-5 w-5 rounded-full border ${
+                          todo.is_complete
+                            ? 'bg-blue-500 border-blue-500'
+                            : 'border-gray-300'
+                        } flex items-center justify-center focus:outline-none`}
+                      >
+                        {todo.is_complete && (
+                          <svg
+                            className='h-3 w-3 text-white'
+                            fill='currentColor'
+                            viewBox='0 0 20 20'
                           >
-                            {todo.title}
-                          </span>
+                            <path
+                              fillRule='evenodd'
+                              d='M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z'
+                              clipRule='evenodd'
+                            />
+                          </svg>
+                        )}
+                      </button>
+                      <div>
+                        <h3
+                          className={`text-lg font-medium ${
+                            todo.is_complete
+                              ? 'text-gray-500 line-through'
+                              : 'text-gray-900'
+                          }`}
+                        >
+                          {todo.title}
                           <PriorityBadge priority={todo.priority} />
-                        </div>
-
+                        </h3>
                         {todo.description && (
                           <p
-                            className={`text-sm mt-1 ${
+                            className={`mt-1 text-sm ${
                               todo.is_complete
                                 ? 'text-gray-400'
                                 : 'text-gray-600'
@@ -369,32 +431,22 @@ export default function TodoList() {
                             {todo.description}
                           </p>
                         )}
-
                         {todo.due_date && (
-                          <div className='text-xs text-gray-500 mt-2 flex items-center'>
-                            <svg
-                              xmlns='http://www.w3.org/2000/svg'
-                              className='h-3 w-3 mr-1'
-                              fill='none'
-                              viewBox='0 0 24 24'
-                              stroke='currentColor'
-                            >
-                              <path
-                                strokeLinecap='round'
-                                strokeLinejoin='round'
-                                strokeWidth={2}
-                                d='M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z'
-                              />
-                            </svg>
-                            <span>{formatDueDate(todo.due_date)}</span>
-                          </div>
+                          <p
+                            className={`mt-1 text-xs ${
+                              todo.is_complete
+                                ? 'text-gray-400'
+                                : 'text-gray-500'
+                            }`}
+                          >
+                            {formatDueDate(todo.due_date)}
+                          </p>
                         )}
                       </div>
                     </div>
                     <button
                       onClick={() => deleteTodo(todo.id)}
                       className='text-gray-400 hover:text-red-500 focus:outline-none'
-                      aria-label='Delete todo'
                     >
                       <svg
                         xmlns='http://www.w3.org/2000/svg'

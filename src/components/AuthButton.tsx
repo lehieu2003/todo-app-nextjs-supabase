@@ -3,11 +3,13 @@
 import { useState, useEffect } from 'react';
 import { createClientSupabaseClient } from '@/lib/supabase';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 export default function AuthButton() {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const router = useRouter();
   const supabase = createClientSupabaseClient();
 
   useEffect(() => {
@@ -35,6 +37,7 @@ export default function AuthButton() {
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
+    router.push('/login'); // Redirect to login page after signing out
   };
 
   if (loading) {

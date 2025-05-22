@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { createClientSupabaseClient } from '@/lib/supabase';
+import { useRouter } from 'next/navigation';
 
 export default function Auth() {
   const [loading, setLoading] = useState(false);
@@ -9,6 +10,7 @@ export default function Auth() {
   const [password, setPassword] = useState('');
   const [authMode, setAuthMode] = useState<'signin' | 'signup'>('signin');
   const [message, setMessage] = useState('');
+  const router = useRouter();
 
   const supabase = createClientSupabaseClient();
 
@@ -26,6 +28,8 @@ export default function Auth() {
 
         if (error) throw error;
         setMessage('Signed in successfully!');
+        // Redirect to home page after successful login
+        router.push('/');
       } else {
         const { error } = await supabase.auth.signUp({
           email,
